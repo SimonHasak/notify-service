@@ -15,10 +15,10 @@ public class EnterEventKafkaListener {
     @Autowired
     public JavaMailSender mailSender;
 
-    @KafkaListener(topics = "${mssg.from.enter.event.service}")
-    public void processMessage(String message) {
-        sendMessage("simon.hasak@gmail.com", "Bachelor", message);
-       log.info("Message from Enter-Event-Service was received");
+    @KafkaListener(topics = "${mssg.from.enter.event.service}", groupId = "foo")
+    public void processMessage(Foo foo) {
+        log.info("[Enter-events-service] received {}", foo.toString());
+        sendMessage("simon.hasak@gmail.com", "Bachelor", foo.toString());
     }
 
     private void sendMessage(String to, String subject, String text) {
