@@ -10,19 +10,19 @@ package sk.tuke.fei.hasak.notifyservice.exception;
  *
  * @author Šimon Hašák
  */
-public class EventNotFoundException extends Exception {
+public class NotificationNotFoundException extends Exception {
 
     /**
      * Instantiates a new Event not found exception.
      */
-    public EventNotFoundException() {}
+    public NotificationNotFoundException() {}
 
     /**
      * Instantiates a new Event not found exception.
      *
      * @param message the message
      */
-    public EventNotFoundException(String message) {
+    public NotificationNotFoundException(String message) {
         super(message);
     }
 
@@ -32,7 +32,7 @@ public class EventNotFoundException extends Exception {
      * @param message the message
      * @param cause   the cause
      */
-    public EventNotFoundException(String message, Throwable cause) {
+    public NotificationNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }
