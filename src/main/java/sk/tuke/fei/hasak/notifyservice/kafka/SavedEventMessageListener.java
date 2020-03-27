@@ -1,40 +1,30 @@
 package sk.tuke.fei.hasak.notifyservice.kafka;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import sk.tuke.fei.hasak.notifyservice.model.Notification;
+import sk.tuke.fei.hasak.notifyservice.service.NotificationService;
 
 @Slf4j
 @Component
-public class NotifyServiceMessageListener {
+public class SavedEventMessageListener {
+
+    private final NotificationService notificationService;
 
     @Autowired
-    public JavaMailSender mailSender;
-
-    @KafkaListener(topics = "${kafka.notify.service.event}", groupId = "${kafka.group.notify.service}")
-    public void processMessage(NotifyServiceMessage message) {
-        log.info("[Enter-events-service] received {}", message.toString());
-        sendMessage(message.getEmail(), "Bachelor", message.getMessage());
+    public SavedEventMessageListener(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
-    private void sendMessage(String to, String subject, String text) {
-        log.info("Sending email...");
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(text);
+    @KafkaListener(topics = "${kafka.topic.saved.event.message}",
+            groupId = "${kafka.groupId.saved.event.message}", containerFactory = "listenerContainerFactorySaved")
+    public void processSavedEventMessage(@NonNull SavedEventMessage message) {
+        log.info("[Enter-events-service] received {}", message.toString());
 
-            mailSender.send(message);
-
-            log.info("Done.");
-        } catch (MailException ex) {
-            ex.printStackTrace();
-        }
+        notificationService.save(new Notification(message.getMessageId(), message.getEmail()));
     }
 
 }
