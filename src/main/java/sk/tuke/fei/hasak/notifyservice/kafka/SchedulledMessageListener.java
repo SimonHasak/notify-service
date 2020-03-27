@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,6 +18,8 @@ import reactor.core.publisher.Mono;
 import sk.tuke.fei.hasak.notifyservice.model.Event;
 import sk.tuke.fei.hasak.notifyservice.model.Notification;
 import sk.tuke.fei.hasak.notifyservice.service.NotificationService;
+
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -66,13 +69,14 @@ public class SchedulledMessageListener {
     private Event getEventByMessageId(long id) {
         WebClient client = WebClient.create(enterEventsServiceAddress);
 
-        Mono<Event> eventResponse = client.get()
+        Mono<EntityModel<Event>> eventResponse = client.get()
                 .uri("/enter-events/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(Event.class);
+                .bodyToMono(new ParameterizedTypeReference<>() {
+                });
 
-        return eventResponse.block();
+        return Objects.requireNonNull(eventResponse.block()).getContent();
     }
 
 }
