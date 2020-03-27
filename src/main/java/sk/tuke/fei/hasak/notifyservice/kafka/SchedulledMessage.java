@@ -11,6 +11,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class SchedulledMessage {
 
-    private long id;
-
+    private long messageId;
 }

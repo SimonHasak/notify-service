@@ -1,6 +1,5 @@
-package sk.tuke.fei.hasak.istimeservice.kafka;
+package sk.tuke.fei.hasak.notifyservice.kafka;
 
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.AllArgsConstructor;
@@ -18,8 +17,9 @@ public class SavedEventMessage {
 
     private long messageId;
 
+    private String email;
+
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime messageTime;
-
 
 }
