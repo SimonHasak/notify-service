@@ -9,10 +9,8 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotifyServiceMessage {
+public class SchedulledMessage {
 
-    private String email;
-
-    private String message;
+    private long id;
 
 }
