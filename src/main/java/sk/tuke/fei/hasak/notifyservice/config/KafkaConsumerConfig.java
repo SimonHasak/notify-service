@@ -11,7 +11,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import sk.tuke.fei.hasak.notifyservice.kafka.SavedEventMessage;
+import sk.tuke.fei.hasak.notifyservice.kafka.MessageDeleted;
 import sk.tuke.fei.hasak.notifyservice.kafka.SchedulledMessage;
 
 import java.util.HashMap;
@@ -24,28 +24,28 @@ public class KafkaConsumerConfig {
     @Value(value = "${kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
-    @Value(value = "${kafka.groupId.saved.event.message}")
-    private String groupIdSaved;
+    @Value(value = "${kafka.groupId.message.deleted}")
+    private String groupIdDeleted;
 
     @Value(value = "${kafka.groupId.schedulled.message}")
     private String groupIdSchedulled;
 
     @Bean
-    @ConditionalOnMissingBean(name = "savedEventMessageConsumerFactory")
-    public ConsumerFactory<String, SavedEventMessage> savedEventMessageConsumerFactory() {
+    @ConditionalOnMissingBean(name = "deletedMessageConsumerFactory")
+    public ConsumerFactory<String, MessageDeleted> deletedMessageConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupIdSaved);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupIdDeleted);
+//        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
-                new JsonDeserializer<>(SavedEventMessage.class, false));
+                new JsonDeserializer<>(MessageDeleted.class, false));
     }
 
     @Bean("listenerContainerFactorySaved")
-    public ConcurrentKafkaListenerContainerFactory<String, SavedEventMessage> listenerContainerFactorySaved() {
-        ConcurrentKafkaListenerContainerFactory<String, SavedEventMessage> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, MessageDeleted> listenerContainerFactorySaved() {
+        ConcurrentKafkaListenerContainerFactory<String, MessageDeleted> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(savedEventMessageConsumerFactory());
+        factory.setConsumerFactory(deletedMessageConsumerFactory());
         return factory;
     }
 
