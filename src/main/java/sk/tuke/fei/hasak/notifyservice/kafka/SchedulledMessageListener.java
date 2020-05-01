@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
@@ -14,12 +15,16 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Mono;
 import sk.tuke.fei.hasak.notifyservice.model.Event;
 import sk.tuke.fei.hasak.notifyservice.model.Notification;
 import sk.tuke.fei.hasak.notifyservice.service.NotificationService;
 
+import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
@@ -29,13 +34,19 @@ public class SchedulledMessageListener {
 
     private final NotificationService notificationService;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final ExecutorService nonBlockingService = Executors.newCachedThreadPool();
+
     @Value(value = "${enter.events.service.address}")
     private String enterEventsServiceAddress;
 
     @Autowired
-    public SchedulledMessageListener(JavaMailSender mailSender, NotificationService notificationService) {
+    public SchedulledMessageListener(JavaMailSender mailSender, NotificationService notificationService,
+                                     ApplicationEventPublisher applicationEventPublisher) {
         this.mailSender = mailSender;
         this.notificationService = notificationService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @SneakyThrows
@@ -47,7 +58,9 @@ public class SchedulledMessageListener {
 
         Notification notification = notificationService.findByMessageId(message.getMessageId());
 
-        sendEmail(notification.getEmail(), "Hello from microservice...", event.getText());
+        applicationEventPublisher.publishEvent(notification);
+
+        sendEmail(notification.getEmail(), event.getId() + ". message", event.getText());
     }
 
     private void sendEmail(String to, String subject, String text) {
@@ -73,8 +86,7 @@ public class SchedulledMessageListener {
                 .uri("/enter-events/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<>() {
-                });
+                .bodyToMono(new ParameterizedTypeReference<>() { });
 
         return Objects.requireNonNull(eventResponse.block()).getContent();
     }

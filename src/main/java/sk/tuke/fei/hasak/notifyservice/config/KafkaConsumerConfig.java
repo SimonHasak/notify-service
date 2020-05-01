@@ -36,7 +36,7 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupIdDeleted);
-//        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
                 new JsonDeserializer<>(MessageDeleted.class, false));
     }
@@ -67,5 +67,4 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(schedulledMessageConsumerFactory());
         return factory;
     }
-
 }
