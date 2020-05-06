@@ -33,7 +33,6 @@
             <AppenderRef ref="STDOUT"/>
 <!--            <AppenderRef ref="GELF"/>-->
         </Logger>
-
     </Loggers>
 
 </Configuration>

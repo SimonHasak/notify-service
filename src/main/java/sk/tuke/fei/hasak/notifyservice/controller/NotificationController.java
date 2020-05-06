@@ -100,13 +100,6 @@ public class NotificationController {
     @GetMapping(value = "/new_notification", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter getNewNotification() throws IOException {
         SseEmitter emitter = new SseEmitter(-1L);
-//        this.emitters.add(emitter);
-//
-//        emitter.onCompletion(() -> this.emitters.remove(emitter));
-//        emitter.onTimeout(() -> {
-//            emitter.complete();
-//            this.emitters.remove(emitter);
-//        });
 
         this.emitters.add(emitter);
         emitter.onCompletion(() -> {

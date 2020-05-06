@@ -15,20 +15,18 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Mono;
 import sk.tuke.fei.hasak.notifyservice.model.Event;
 import sk.tuke.fei.hasak.notifyservice.model.Notification;
 import sk.tuke.fei.hasak.notifyservice.service.NotificationService;
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-public class SchedulledMessageListener {
+public class IsTimeKafkaListener {
 
     private final JavaMailSender mailSender;
 
@@ -42,8 +40,8 @@ public class SchedulledMessageListener {
     private String enterEventsServiceAddress;
 
     @Autowired
-    public SchedulledMessageListener(JavaMailSender mailSender, NotificationService notificationService,
-                                     ApplicationEventPublisher applicationEventPublisher) {
+    public IsTimeKafkaListener(JavaMailSender mailSender, NotificationService notificationService,
+                               ApplicationEventPublisher applicationEventPublisher) {
         this.mailSender = mailSender;
         this.notificationService = notificationService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -52,7 +50,7 @@ public class SchedulledMessageListener {
     @SneakyThrows
     @KafkaListener(topics = "${kafka.topic.schedulled.message}",
             groupId = "${kafka.groupId.schedulled.message}", containerFactory = "listenerContainerFactorySchedulled")
-    public void processSchedulledMessage(@NonNull SchedulledMessage message) {
+    public void processSchedulledMessage(@NonNull IsTime message) {
         log.info("[Notification-service] received: {}", message.toString());
         Event event = getEventByMessageId(message.getMessageId());
 

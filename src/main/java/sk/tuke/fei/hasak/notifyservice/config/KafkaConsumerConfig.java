@@ -12,7 +12,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import sk.tuke.fei.hasak.notifyservice.kafka.MessageDeleted;
-import sk.tuke.fei.hasak.notifyservice.kafka.SchedulledMessage;
+import sk.tuke.fei.hasak.notifyservice.kafka.IsTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,18 +51,18 @@ public class KafkaConsumerConfig {
 
     @Bean
     @ConditionalOnMissingBean(name = "schedulledMessageConsumerFactory")
-    public ConsumerFactory<String, SchedulledMessage> schedulledMessageConsumerFactory() {
+    public ConsumerFactory<String, IsTime> schedulledMessageConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupIdSchedulled);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
-                new JsonDeserializer<>(SchedulledMessage.class, false));
+                new JsonDeserializer<>(IsTime.class, false));
     }
 
     @Bean("listenerContainerFactorySchedulled")
-    public ConcurrentKafkaListenerContainerFactory<String, SchedulledMessage> listenerContainerFactorySchedulled() {
-        ConcurrentKafkaListenerContainerFactory<String, SchedulledMessage> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, IsTime> listenerContainerFactorySchedulled() {
+        ConcurrentKafkaListenerContainerFactory<String, IsTime> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(schedulledMessageConsumerFactory());
         return factory;

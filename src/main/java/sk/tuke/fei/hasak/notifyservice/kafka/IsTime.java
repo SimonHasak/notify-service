@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SchedulledMessage {
+public class IsTime {
 
     private long messageId;
 }
