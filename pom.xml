@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>sk.tuke.fei.hasak</groupId>
-	<artifactId>notify-service</artifactId>
+	<artifactId>notification-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>notify-service</name>
+	<name>notification-service</name>
 	<description>Project for notifying user about up comming events.</description>
 
 	<properties>

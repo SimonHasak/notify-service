@@ -7,31 +7,31 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
 
-<!--        <Gelf name="GELF" host="tcp:localhost" port="12201" version="1.1" extractStackTrace="true"-->
-<!--              filterStackTrace="true" maximumMessageSize="8192"-->
-<!--              originHost="%host{fqdn}">-->
-<!--            <Field name="className" pattern="%C"/>-->
-<!--        </Gelf>-->
+        <Gelf name="GELF" host="tcp:logstash" port="12201" version="1.1" extractStackTrace="true"
+              filterStackTrace="true" maximumMessageSize="8192"
+              originHost="%host{fqdn}">
+            <Field name="className" pattern="%C"/>
+        </Gelf>
 
     </Appenders>
 
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="STDOUT"/>
-<!--            <AppenderRef ref="GELF"/>-->
+            <AppenderRef ref="GELF"/>
         </Root>
 
         <Logger name="sk.tuke.fei.hasak" level="DEBUG" additivity="false">
             <AppenderRef ref="STDOUT"/>
-<!--            <AppenderRef ref="GELF"/>-->
+            <AppenderRef ref="GELF"/>
         </Logger>
         <Logger name="org.springframework" level="WARN" additivity="false">
             <AppenderRef ref="STDOUT"/>
-<!--            <AppenderRef ref="GELF"/>-->
+            <AppenderRef ref="GELF"/>
         </Logger>
-        <Logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="WARN" additivity="false">
+        <Logger name="org.apache.kafka" level="WARN" additivity="false">
             <AppenderRef ref="STDOUT"/>
-<!--            <AppenderRef ref="GELF"/>-->
+            <AppenderRef ref="GELF"/>
         </Logger>
     </Loggers>
 
